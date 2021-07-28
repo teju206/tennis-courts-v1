@@ -1,23 +1,28 @@
 package com.tenniscourts.reservations;
 
-import com.tenniscourts.exceptions.EntityNotFoundException;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.tenniscourts.exceptions.EntityNotFoundException;
+
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public class ReservationService {
 
-    private final ReservationRepository reservationRepository;
+	@Autowired
+    private ReservationRepository reservationRepository;
 
-    private final ReservationMapper reservationMapper;
+	@Autowired
+    private ReservationMapper reservationMapper;
 
     public ReservationDTO bookReservation(CreateReservationRequestDTO createReservationRequestDTO) {
-        throw new UnsupportedOperationException();
+    	 return reservationMapper.map(reservationRepository.saveAndFlush(reservationMapper.map(createReservationRequestDTO)));
     }
 
     public ReservationDTO findReservation(Long reservationId) {
@@ -45,7 +50,9 @@ public class ReservationService {
 
     private Reservation updateReservation(Reservation reservation, BigDecimal refundValue, ReservationStatus status) {
         reservation.setReservationStatus(status);
-        reservation.setValue(reservation.getValue().subtract(refundValue));
+        if(reservation.getValue()!=null) {
+        	reservation.setValue(reservation.getValue().subtract(refundValue));
+        }
         reservation.setRefundValue(refundValue);
 
         return reservationRepository.save(reservation);
