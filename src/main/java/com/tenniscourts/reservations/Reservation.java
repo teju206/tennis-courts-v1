@@ -34,8 +34,7 @@ public class Reservation extends BaseEntity<Long> {
     @ManyToOne
     @NotNull
     private Schedule schedule;
-
-    @NotNull
+   
     private BigDecimal value;
 
     @NotNull

@@ -1,22 +1,31 @@
 package com.tenniscourts.schedules;
 
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.tenniscourts.tenniscourts.TennisCourt;
+
 @Service
-@AllArgsConstructor
 public class ScheduleService {
 
-    private final ScheduleRepository scheduleRepository;
+	@Autowired
+    ScheduleRepository scheduleRepository;
 
-    private final ScheduleMapper scheduleMapper;
+	@Autowired
+    ScheduleMapper scheduleMapper;
 
     public ScheduleDTO addSchedule(Long tennisCourtId, CreateScheduleRequestDTO createScheduleRequestDTO) {
-        //TODO: implement addSchedule
-        return null;
+    	Schedule schedule= new Schedule();
+    	TennisCourt tennisCourt= new TennisCourt();
+    	tennisCourt.setId(tennisCourtId);
+    	schedule.setTennisCourt(tennisCourt);
+    	schedule.setStartDateTime(createScheduleRequestDTO.getStartDateTime());
+    	LocalDateTime endDateTime= createScheduleRequestDTO.getStartDateTime().plusHours(1);
+    	schedule.setEndDateTime(endDateTime);
+    	return scheduleMapper.map(scheduleRepository.save(schedule));
     }
 
     public List<ScheduleDTO> findSchedulesByDates(LocalDateTime startDate, LocalDateTime endDate) {

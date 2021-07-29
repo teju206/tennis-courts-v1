@@ -1,17 +1,28 @@
 package com.tenniscourts.tenniscourts;
 
-import com.tenniscourts.config.BaseRestController;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.tenniscourts.config.BaseRestController;
+
+import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@RestController
 public class TennisCourtController extends BaseRestController {
 
+	@Autowired
     private final TennisCourtService tennisCourtService;
 
-    //TODO: implement rest and swagger
-    public ResponseEntity<Void> addTennisCourt(TennisCourtDTO tennisCourtDTO) {
-        return ResponseEntity.created(locationByEntity(tennisCourtService.addTennisCourt(tennisCourtDTO).getId())).build();
+	@PostMapping("/createTennisCourt")
+	@ApiOperation(value = "This helps in creating a new tennis court with a given name and the possible schedules", response = Long.class)
+    public ResponseEntity<Long> addTennisCourt( @RequestBody TennisCourtDTO tennisCourtDTO) {
+        return  new ResponseEntity<Long>(tennisCourtService.addTennisCourt(tennisCourtDTO).getId(), HttpStatus.CREATED);
     }
 
     //TODO: implement rest and swagger
